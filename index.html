@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Milestones Manager — Practice management for SLPs</title>
+    <meta
+      name="description"
+      content="A private practice management desktop app built for Speech-Language Pathologists. Offline-first. Local-first. Yours."
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Milestones Manager" />
+    <meta
+      property="og:description"
+      content="A private practice management desktop app built for Speech-Language Pathologists."
+    />
+    <meta property="og:type" content="website" />
+
+    <link rel="icon" type="image/svg+xml" href="./icon-flat.svg" />
+
+    <!-- Fonts: Fraunces (display serif) + Inter Tight (body sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #fbf7f2;
+        --bg-tint: #f4ece2;
+        --ink: #233c62;
+        --ink-soft: #5a6f8c;
+        --coral: #fd7b70;
+        --coral-deep: #e85f54;
+        --pink-soft: #fccbc9;
+        --sky: #769ac2;
+        --rule: rgba(35, 60, 98, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Inter Tight", system-ui, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      /* Subtle grain + atmosphere */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(
+            circle at 15% 10%,
+            rgba(253, 123, 112, 0.08) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(118, 154, 194, 0.1) 0%,
+            transparent 45%
+          );
+        z-index: 0;
+      }
+
+      .nav {
+        position: relative;
+        z-index: 10;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "Fraunces", serif;
+        font-weight: 500;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+      }
+
+      .nav-brand img {
+        width: 28px;
+        height: 28px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 28px;
+        font-size: 14px;
+      }
+
+      .nav-links a {
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--ink);
+      }
+
+      .hero {
+        position: relative;
+        z-index: 1;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 80px 32px 120px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 80px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--ink-soft);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--coral);
+        box-shadow: 0 0 0 4px rgba(253, 123, 112, 0.18);
+      }
+
+      h1 {
+        font-family: "Fraunces", serif;
+        font-weight: 400;
+        font-size: clamp(48px, 6.5vw, 84px);
+        line-height: 1.02;
+        letter-spacing: -0.025em;
+        margin-bottom: 28px;
+      }
+
+      h1 em {
+        font-style: italic;
+        font-weight: 300;
+        color: var(--coral-deep);
+      }
+
+      .lede {
+        font-size: 19px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        max-width: 480px;
+        margin-bottom: 48px;
+      }
+
+      .cta-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn-download {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--ink);
+        color: var(--bg);
+        padding: 18px 28px;
+        border-radius: 999px;
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+      }
+
+      .btn-download:hover {
+        background: var(--coral-deep);
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px -8px rgba(232, 95, 84, 0.4);
+      }
+
+      .btn-download:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-download svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .meta {
+        font-size: 13px;
+        color: var(--ink-soft);
+        line-height: 1.5;
+      }
+
+      .meta strong {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .meta-version {
+        display: block;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Hero visual */
+      .hero-visual {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        max-width: 460px;
+        margin-left: auto;
+      }
+
+      .hero-visual::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at 50% 50%,
+          var(--bg-tint) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+      }
+
+      .hero-visual img {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-2deg);
+        }
+        50% {
+          transform: translateY(-12px) rotate(2deg);
+        }
+      }
+
+      /* Footer */
+      .footer {
+        position: relative;
+        z-index: 1;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 32px;
+        border-top: 1px solid var(--rule);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: var(--ink-soft);
+      }
+
+      .footer a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid var(--rule);
+        transition: color 0.2s, border-color 0.2s;
+      }
+
+      .footer a:hover {
+        color: var(--ink);
+        border-color: currentColor;
+      }
+
+      /* Loading state */
+      @keyframes pulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+
+      .loading {
+        animation: pulse 1.4s ease-in-out infinite;
+      }
+
+      /* Page entrance */
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav,
+      .eyebrow,
+      h1,
+      .lede,
+      .cta-row {
+        opacity: 0;
+        animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+      }
+
+      .nav { animation-delay: 0.0s; }
+      .eyebrow { animation-delay: 0.1s; }
+      h1 { animation-delay: 0.2s; }
+      .lede { animation-delay: 0.35s; }
+      .cta-row { animation-delay: 0.5s; }
+
+      .hero-visual {
+        opacity: 0;
+        animation: rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.4s forwards;
+      }
+
+      /* Mobile */
+      @media (max-width: 880px) {
+        .nav {
+          padding: 20px 24px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          padding: 32px 24px 64px;
+          text-align: left;
+        }
+
+        .hero-visual {
+          order: -1;
+          max-width: 220px;
+          margin: 0 auto;
+        }
+
+        h1 {
+          font-size: clamp(40px, 11vw, 56px);
+        }
+
+        .lede {
+          font-size: 17px;
+        }
+
+        .footer {
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="nav-brand">
+        <img src="./icon-flat.svg" alt="" />
+        <span>Milestones Manager</span>
+      </div>
+      <div class="nav-links">
+        <a
+          href="https://github.com/bobbycoleman-dev/milestones-manager-releases/releases"
+          >Releases</a
+        >
+        <a
+          href="https://github.com/bobbycoleman-dev/milestones-manager-releases"
+          >GitHub</a
+        >
+      </div>
+    </nav>
+
+    <main class="hero">
+      <div>
+        <div class="eyebrow">For Speech-Language Pathologists</div>
+        <h1>
+          Your practice,<br />
+          quietly <em>unified.</em>
+        </h1>
+        <p class="lede">
+          Client records, scheduling, evaluations, and billing — all in one
+          offline-first desktop app. Your data stays local. Your work stays
+          yours.
+        </p>
+
+        <div class="cta-row">
+          <a
+            id="download-btn"
+            class="btn-download loading"
+            href="#"
+            aria-label="Download Milestones Manager for macOS"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
+              />
+            </svg>
+            <span id="download-label">Loading latest release…</span>
+          </a>
+
+          <div class="meta">
+            <span id="version-line" class="meta-version">&nbsp;</span>
+            <span>Free · macOS Apple Silicon · <strong>49 MB</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <img src="./icon-flat.svg" alt="" />
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div>
+        © <span id="year"></span> Robert Coleman. Built with Tauri, React, and
+        Rust.
+      </div>
+      <div>
+        <a
+          href="https://github.com/bobbycoleman-dev/milestones-manager-releases/issues"
+          >Report an issue</a
+        >
+      </div>
+    </footer>
+
+    <script>
+      // Auto-fetch latest release from GitHub API and wire up the download button
+      const REPO = "bobbycoleman-dev/milestones-manager-releases";
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      async function loadLatestRelease() {
+        const btn = document.getElementById("download-btn");
+        const label = document.getElementById("download-label");
+        const versionLine = document.getElementById("version-line");
+
+        try {
+          const res = await fetch(
+            `https://api.github.com/repos/${REPO}/releases/latest`,
+            { headers: { Accept: "application/vnd.github+json" } }
+          );
+
+          if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+
+          const data = await res.json();
+          const dmg = (data.assets || []).find((a) =>
+            a.name.toLowerCase().endsWith(".dmg")
+          );
+
+          if (!dmg) throw new Error("No .dmg asset found in latest release");
+
+          btn.href = dmg.browser_download_url;
+          btn.classList.remove("loading");
+          label.textContent = "Download for macOS";
+
+          const version = data.tag_name || data.name || "";
+          const date = data.published_at
+            ? new Date(data.published_at).toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })
+            : "";
+          versionLine.innerHTML = `<strong>${version}</strong>${
+            date ? " · released " + date : ""
+          }`;
+        } catch (err) {
+          console.error(err);
+          btn.classList.remove("loading");
+          btn.href = `https://github.com/${REPO}/releases/latest`;
+          label.textContent = "View releases on GitHub";
+          versionLine.textContent = "Couldn't load latest version";
+        }
+      }
+
+      loadLatestRelease();
+    </script>
+  </body>
+</html>
