@@ -431,7 +431,10 @@
 
           <div class="meta">
             <span id="version-line" class="meta-version">&nbsp;</span>
-            <span>Free · macOS Apple Silicon · <strong>49 MB</strong></span>
+            <span
+              >Free · macOS Apple Silicon ·
+              <strong id="size-line">—</strong></span
+            >
           </div>
         </div>
       </div>
@@ -460,10 +463,18 @@
 
       document.getElementById("year").textContent = new Date().getFullYear();
 
+      function formatBytes(bytes) {
+        if (!bytes && bytes !== 0) return "—";
+        const mb = bytes / (1024 * 1024);
+        if (mb >= 100) return `${Math.round(mb)} MB`;
+        return `${mb.toFixed(1)} MB`;
+      }
+
       async function loadLatestRelease() {
         const btn = document.getElementById("download-btn");
         const label = document.getElementById("download-label");
         const versionLine = document.getElementById("version-line");
+        const sizeLine = document.getElementById("size-line");
 
         try {
           const res = await fetch(
@@ -484,6 +495,8 @@
           btn.classList.remove("loading");
           label.textContent = "Download for macOS";
 
+          sizeLine.textContent = formatBytes(dmg.size);
+
           const version = data.tag_name || data.name || "";
           const date = data.published_at
             ? new Date(data.published_at).toLocaleDateString(undefined, {
@@ -501,6 +514,7 @@
           btn.href = `https://github.com/${REPO}/releases/latest`;
           label.textContent = "View releases on GitHub";
           versionLine.textContent = "Couldn't load latest version";
+          sizeLine.textContent = "—";
         }
       }
 
